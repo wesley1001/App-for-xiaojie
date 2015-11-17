@@ -8,6 +8,7 @@
 'use strict';
 
 import React from 'react-native';
+import SignalCard from './profile/_signalCard';
 let {
   Image,
   StyleSheet,
@@ -68,7 +69,7 @@ class Profile extends Component {
    */
   calcDate() {
     let start = (new Date(this.state.startTime)).getTime();
-    let end = (new Date(this.state.endTime)).getTime();
+    let end = Date.now();
     
     let count = (end - start) / 1000 / 60 / 60 / 24;
 
@@ -79,11 +80,11 @@ class Profile extends Component {
     return (
        <View style={styles.container}>
         <View style={styles.imageBorder}>
-          <Image style={styles.avatar} source={{uri: this.props.boyData.avatar}} />
+          <SignalCard avatar={this.props.boyData.avatar} name={this.props.boyData.name} />
           <View style={styles.and}>
             <Text style={styles.textAnd}>{this.props.boyData.name}and {this.props.girlData.name}</Text>
           </View>
-          <Image style={styles.avatar} source={{uri: this.props.girlData.avatar}} />
+          <SignalCard avatar={this.props.girlData.avatar} name={this.props.girlData.name} />
         </View>
         <View style={styles.countDate}>
           <Text style={styles.countDateText}>
@@ -112,13 +113,7 @@ let styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
   },
-  // 头像
-  avatar: {
-    borderRadius: 5,
-    justifyContent: 'center',
-    width: 70,
-    height: 70,
-  },
+
   // 两个头像之间的and
   and: {
     flex: 1,
