@@ -1,6 +1,9 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * Author: AnnatarHe
+ * Github: AnnatarHe
+ * Email: iamhele1994@gmail.com
+ *
+ * 个人信息展示页面，读取过数据之后展示
  */
 'use strict';
 import React from 'react-native';
@@ -8,30 +11,48 @@ import Profile from './components/profile';
 
 let {
   AppRegistry,
+  Component,
   StyleSheet,
   Text,
   View,
 } = React;
 
-var AppForXiaojie = React.createClass({
+class AppForXiaojie extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      host: 'http://localhost:3000/',
-      loading: true,
+      host: 'http://xiaojie.daxuedogs.com/',
+      loading: 0,
       boyId: '5649da64146d9e5023f933c0',
       girlId: '5649da3c146d9e5023f933bf',
       boyData: {},
       girlData: {},
     };
 
+    this.fetchData();
+
+  }
+
+  fetchData() {
+    let boyUrl = `${this.state.host}users/${this.state.boyId}`;
+    let girlUrl = `${this.state.host}users/${this.state.girlId}`;
+
+    
+    fetch(girlUrl)
+      .then(girlRes => girlRes.json())
+      .then(girlFetched => this.setState({girlData: girlFetched, loading: this.state.loading+1}))
+      .then(() => console.log(this.state.loading))
+      .catch(err => console.warn(err));
+    fetch(boyUrl)
+      .then(boyRes => boyRes.json())
+      .then(boyFetched => this.setState({boyData: boyFetched, loading: this.state.loading+1}))
+      .then(() => console.log(this.state.loading))
+      .catch(err => console.warn(err));
   }
 
   loading() {
-
-    if (this.state.loading == true) {
       return (
         <View style={styles.loading}>
           <Text style={styles.loadingText}>
@@ -39,20 +60,20 @@ var AppForXiaojie = React.createClass({
           </Text>
         </View>
         );
+  }
+
+  renderData() {
+    return (<Profile boyData={this.state.boyData} girlData={this.state.girlData} hostUrl={this.state.host} />);
+  }
+
+  render() {
+    if (this.state.loading < 2) {
+      return this.loading();
     }else {
-      return <Profile boyData={this.state.boyData} grilData={this.state.girlData} hostUrl={this.state.host}/>
+      return this.renderData();
     }
-
   }
-
-  render: function() {
-    return (
-      <View style={styles.container}>
-        {this.loading()}
-      </View>
-    );
-  }
-});
+};
 
 var styles = StyleSheet.create({
   container: {
@@ -61,12 +82,11 @@ var styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
+  loading: {
     margin: 10,
   },
-  instructions: {
+  loadingText: {
+    fontSize: 20,
     textAlign: 'center',
     color: '#333333',
     marginBottom: 5,

@@ -9,10 +9,11 @@
 
 import React from 'react-native';
 let {
-  AppRegistry,
+  Image,
   StyleSheet,
   Text,
   View,
+  Component,
 } = React;
 
 class Profile extends Component {
@@ -32,6 +33,9 @@ class Profile extends Component {
   constructor(props) {
     super(props);
     this.fetchDate();
+    console.log(props.hostUrl);
+    console.log(props.girlData);
+    console.log(props.boyData);
 
     this.state = {
       startTime: '',
@@ -48,19 +52,23 @@ class Profile extends Component {
     let url = `${this.props.hostUrl}/times/${dateId}`;
 
     fetch(url)
+      .then(data => data.json())
       .then(res => {
         this.setState({
         startTime: res.startTime,
         endTime: res.endTime
-        });
-        this.calcDate();
+        })
       })
+      .then(() => this.calcDate())
       .catch(err => console.warn(err));
   }
 
+  /**
+   * 计算两个时间差，设定日期
+   */
   calcDate() {
     let start = (new Date(this.state.startTime)).getTime();
-    let end = (new this.state.endTime)),getTime();
+    let end = (new Date(this.state.endTime)).getTime();
     
     let count = (end - start) / 1000 / 60 / 60 / 24;
 
@@ -71,11 +79,11 @@ class Profile extends Component {
     return (
        <View style={styles.container}>
         <View style={styles.imageBorder}>
-          <Image style={style.avatar} source={{uri: this.props.boyData.avatar}}
+          <Image style={styles.avatar} source={{uri: this.props.boyData.avatar}} />
           <View style={styles.and}>
-            <Text style={styles.textAnd}>and</Text>
+            <Text style={styles.textAnd}>{this.props.boyData.name}and {this.props.girlData.name}</Text>
           </View>
-          <Image style={style.avatar} source={{uri: this.props.girlData.avatar}}
+          <Image style={styles.avatar} source={{uri: this.props.girlData.avatar}} />
         </View>
         <View style={styles.countDate}>
           <Text style={styles.countDateText}>
@@ -89,19 +97,47 @@ class Profile extends Component {
 
 let styles = StyleSheet.create({
   // 容器
-  container: {},
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: '#00BCD4',
+  },
   // 大的背景框，图片的外面
-  imageBorder: {},
+  imageBorder: {
+    flex: 3,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
   // 头像
-  avatar: {},
+  avatar: {
+    borderRadius: 5,
+    justifyContent: 'center',
+    width: 70,
+    height: 70,
+  },
   // 两个头像之间的and
-  and: {},
+  and: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   // 两个头像之间的文字
-  textAnd: {},
+  textAnd: {
+    textAlign: 'center',
+    color: '#ffffff',
+  },
   // 统计时间的视图模型
-  countDate: {},
+  countDate: {
+    flex: 1,
+    paddingTop: 5,
+  },
   // 统计时间的文字
-  countDateText: {}
+  countDateText: {
+    textAlign: 'center',
+  },
 });
 
 export default Profile;
